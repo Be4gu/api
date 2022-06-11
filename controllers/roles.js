@@ -17,5 +17,10 @@ roleRouter.get("/", async (req, resp, next) => {
   const roles = await Role.find({});
   resp.json(roles);
 });
+roleRouter.get("/:name", async (req, resp, next) => {
+  const { name } = req.params;
+  const roles = await Role.find({ name: name });
+  resp.json(roles);
+});
 
 module.exports = roleRouter;
