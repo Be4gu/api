@@ -16,6 +16,7 @@ const clubsRouter = require("./controllers/clubs");
 const languageRouter = require("./controllers/languages");
 const roleRouter = require("./controllers/roles");
 const countryRouter = require("./controllers/countries");
+const loginRouter = require("./controllers/login");
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -45,6 +46,7 @@ app.use("/api/clubs", clubsRouter);
 app.use("/api/languages", languageRouter);
 app.use("/api/roles", roleRouter);
 app.use("/api/countries", countryRouter);
+app.use("/api/login", loginRouter);
 
 app.use(notFound);
 app.use(Sentry.Handlers.errorHandler());

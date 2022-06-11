@@ -14,6 +14,7 @@ mongoose
   });
 
 // En caso de algun error que no sea controlado cierra la conexion
-process.on("uncaughtException", () => {
+process.on("uncaughtException", (error) => {
+  console.log(error);
   mongoose.disconnect();
 });
