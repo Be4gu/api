@@ -47,7 +47,13 @@ const userSchema = new Schema({
       ref: "Language",
     },
   ],
-  role: [{ type: Schema.Types.ObjectId, ref: "Role" }],
+  image: String,
+  role: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Role",
+    },
+  ],
 });
 
 userSchema.set("toJSON", {
