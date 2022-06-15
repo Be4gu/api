@@ -4,35 +4,81 @@ const User = require('../models/User');
 const Club = require('../models/Club');
 const jwt = require('jsonwebtoken');
 
-usersRouter.post('/', async (req, resp, next) => {
-  const { body } = req;
-  const { email, password, name, nickName, clubs, language, role, surname, image } = body;
-  const { idClub } = clubs[0];
-  const club = await Club.findById(idClub);
-  console.log(clubs);
+usersRouter.get('/pruebaaaa/:elem', async (req, resp) => {
+  let { elem } = req.params;
+  elem = JSON.parse(elem);
+  const users = await User.find({}).or(elem);
 
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-
-  const newUser = new User({
-    email,
-    passwordHash,
-    name,
-    nickName,
-    clubs,
-    language,
-    role,
-    surname,
-    image,
+  resp.json(users);
+});
+usersRouter.get('/pruebaaaa2/:elem', async (req, resp) => {
+  let { elem } = req.params;
+  elem = JSON.parse(elem);
+  const reg = RegExp('^' + elem);
+  const users = await User.find({ nickName: reg });
+  const club = await Club.find({ name: reg });
+  const reg2 = RegExp('^' + elem.toUpperCase());
+  const club2 = await Club.find({ name: reg2 });
+  const users2 = await User.find({ nickName: reg2 });
+  const aux = [];
+  users.forEach((ele) => {
+    aux.push(ele);
   });
-  try {
-    const savedUser = await newUser.save();
+  users2.forEach((ele) => {
+    aux.push(ele);
+  });
+  club.forEach((ele) => {
+    aux.push(ele);
+  });
+  club2.forEach((ele) => {
+    aux.push(ele);
+  });
+  resp.json(aux);
+});
+usersRouter.post('/', async (req, resp, next) => {
+  const { email, name, surname, nickName, password, image, contactEmail, natalCountry, residentCountry, linkTwitch, linkTwitter, linkVlr, list_roles, list_langues, list_clubs } = req.body;
+  let roles_id = [];
+  let langues_id = [];
+  list_langues.forEach((ele) => {
+    langues_id.push(ele.id);
+  });
+  list_roles.forEach((ele) => {
+    roles_id.push(ele.id);
+  });
 
-    club.player = club.player.concat(savedUser._id);
-    await club.save();
-    resp.status(201).json(savedUser);
+  try {
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const newUser = new User({
+      email,
+      passwordHash,
+      name,
+      surname,
+      nickName,
+      contactEmail,
+      natalCountry,
+      resCountry: residentCountry,
+      linkTwitch,
+      linkTwitter,
+      linkVlr,
+      language: langues_id,
+      role: roles_id,
+      clubs: list_clubs,
+      image,
+    });
+    await newUser.save();
+    return resp.json({ succes: 'The user has been created successfully' });
   } catch (error) {
-    next(error);
+    console.log(error);
+    aux = error.message.split(' { ');
+    aux2 = aux[1].split(':');
+    console.log(aux2[0]);
+    if (aux2[0] === 'contactEmail') {
+      return resp.json({ error: 'Contact email alredy exists' });
+    } else if (aux2[0] === 'email') {
+      return resp.json({ error: 'Email alredy exists' });
+    }
   }
 });
 
@@ -66,49 +112,17 @@ usersRouter.get('/', async (req, resp) => {
     });
   resp.json(users);
 });
-
-usersRouter.put('/prueba/:id', async (req, resp, next) => {
-  const { id } = req.params;
-
-  const { name } = req.body;
-
-  const authorization = req.get('authorization');
-  console.log(authorization);
-  let token = null;
-  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
-    token = authorization.substring(7);
-  }
-  let decodedToken = {};
-  try {
-    decodedToken = jwt.verify(token, process.env.SALT);
-  } catch {}
-  if (!token || !decodedToken.id) {
-    return resp.status(401).json({ error: 'token missing or invalid' });
-  }
-  const user = await User.findById(id);
-  user.name = name;
-
-  try {
-    await user.save();
-    resp.status(200).json(user);
-  } catch (error) {
-    next(error);
-  }
-});
-
 usersRouter.put('/:id', async (req, resp, next) => {
   const { id } = req.params;
   const { name, surname, nickName, contactEmail, natalCountry, residentCountry, linkTwitch, linkTwitter, linkVlr, list_roles, list_langues, list_clubs } = req.body;
   let roles_id = [];
   let langues_id = [];
-  let clubs_id = [];
   list_langues.forEach((ele) => {
     langues_id.push(ele.id);
   });
   list_roles.forEach((ele) => {
     roles_id.push(ele.id);
   });
-
   const authorization = req.get('authorization');
   let token = null;
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
