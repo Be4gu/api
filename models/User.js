@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema({
   email: {
@@ -21,13 +21,14 @@ const userSchema = new Schema({
   },
   resCountry: {
     type: Schema.Types.ObjectId,
-    ref: "Country",
+    ref: 'Country',
   },
   natalCountry: {
     type: Schema.Types.ObjectId,
-    ref: "Country",
+    ref: 'Country',
   },
-  status: String,
+  canonicalName: String,
+  status: Boolean,
   linkTwitch: String,
   linkVlr: String,
   linkTwitter: String,
@@ -35,7 +36,7 @@ const userSchema = new Schema({
     {
       idClub: {
         type: Schema.Types.ObjectId,
-        ref: "Club",
+        ref: 'Club',
       },
       entryDate: String,
       exitDate: String,
@@ -44,19 +45,19 @@ const userSchema = new Schema({
   language: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Language",
+      ref: 'Language',
     },
   ],
   image: String,
   role: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Role",
+      ref: 'Role',
     },
   ],
 });
 
-userSchema.set("toJSON", {
+userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id;
     delete returnedObject._id;
@@ -66,6 +67,6 @@ userSchema.set("toJSON", {
   },
 });
 
-const User = model("User", userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;

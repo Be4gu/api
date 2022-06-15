@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const clubSchema = new Schema({
   name: {
@@ -9,12 +9,13 @@ const clubSchema = new Schema({
   player: [
     {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
   ],
+  canonicalName: String,
 });
 
-clubSchema.set("toJSON", {
+clubSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id;
     delete returnedObject._id;
@@ -22,6 +23,6 @@ clubSchema.set("toJSON", {
   },
 });
 
-const Club = model("Club", clubSchema);
+const Club = model('Club', clubSchema);
 
 module.exports = Club;

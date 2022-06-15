@@ -14,25 +14,19 @@ usersRouter.get('/pruebaaaa/:elem', async (req, resp) => {
 usersRouter.get('/pruebaaaa2/:elem', async (req, resp) => {
   let { elem } = req.params;
   elem = JSON.parse(elem);
-  const reg = RegExp('^' + elem);
-  const users = await User.find({ nickName: reg });
-  const club = await Club.find({ name: reg });
-  const reg2 = RegExp('^' + elem.toUpperCase());
-  const club2 = await Club.find({ name: reg2 });
-  const users2 = await User.find({ nickName: reg2 });
+  const reg = RegExp('^' + elem.toUpperCase());
+  const users = await User.find({ canonicalName: reg });
+  const club = await Club.find({ canonicalName: reg });
+
   const aux = [];
   users.forEach((ele) => {
     aux.push(ele);
   });
-  users2.forEach((ele) => {
-    aux.push(ele);
-  });
+
   club.forEach((ele) => {
     aux.push(ele);
   });
-  club2.forEach((ele) => {
-    aux.push(ele);
-  });
+
   resp.json(aux);
 });
 usersRouter.post('/', async (req, resp, next) => {
@@ -66,6 +60,8 @@ usersRouter.post('/', async (req, resp, next) => {
       role: roles_id,
       clubs: list_clubs,
       image,
+      status: false,
+      canonicalName: nickName.toUpperCase(),
     });
     await newUser.save();
     return resp.json({ succes: 'The user has been created successfully' });
@@ -114,7 +110,7 @@ usersRouter.get('/', async (req, resp) => {
 });
 usersRouter.put('/:id', async (req, resp, next) => {
   const { id } = req.params;
-  const { name, surname, nickName, contactEmail, natalCountry, residentCountry, linkTwitch, linkTwitter, linkVlr, list_roles, list_langues, list_clubs } = req.body;
+  const { name, surname, nickName, status, contactEmail, natalCountry, residentCountry, linkTwitch, linkTwitter, linkVlr, list_roles, list_langues, list_clubs } = req.body;
   let roles_id = [];
   let langues_id = [];
   list_langues.forEach((ele) => {
@@ -146,6 +142,8 @@ usersRouter.put('/:id', async (req, resp, next) => {
   user.role = roles_id;
   user.clubs = list_clubs;
   user.language = langues_id;
+  user.status = status;
+  user.canonicalName = nickName.toUpperCase();
   try {
     await user.save();
     resp.status(200).json(user);
