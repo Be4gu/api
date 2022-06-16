@@ -1,8 +1,7 @@
-const roleRouter = require("express").Router();
-const Role = require("../models/Role");
-const { response } = require("express");
+const roleRouter = require('express').Router();
+const Role = require('../models/Role');
 
-roleRouter.post("/", async (req, resp, next) => {
+roleRouter.post('/', async (req, resp, next) => {
   const { body } = req;
   const { name } = body;
 
@@ -13,11 +12,11 @@ roleRouter.post("/", async (req, resp, next) => {
   resp.status(201).json(savedRole);
 });
 
-roleRouter.get("/", async (req, resp, next) => {
+roleRouter.get('/', async (req, resp, next) => {
   const roles = await Role.find({});
   resp.json(roles);
 });
-roleRouter.get("/:name", async (req, resp, next) => {
+roleRouter.get('/:name', async (req, resp, next) => {
   const { name } = req.params;
   const roles = await Role.find({ name: name });
   resp.json(roles);

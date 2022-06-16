@@ -4,8 +4,12 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: true,
+    required: true,
   },
-  passwordHash: String,
+  passwordHash: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -14,14 +18,19 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  nickName: String,
+  nickName: {
+    type: String,
+    required: true,
+  },
   contactEmail: {
     type: String,
     unique: true,
+    required: true,
   },
   resCountry: {
     type: Schema.Types.ObjectId,
     ref: 'Country',
+    required: true,
   },
   natalCountry: {
     type: Schema.Types.ObjectId,
@@ -46,6 +55,7 @@ const userSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'Language',
+      required: true,
     },
   ],
   image: String,

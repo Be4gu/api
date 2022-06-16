@@ -4,31 +4,6 @@ const User = require('../models/User');
 const Club = require('../models/Club');
 const jwt = require('jsonwebtoken');
 
-usersRouter.get('/pruebaaaa/:elem', async (req, resp) => {
-  let { elem } = req.params;
-  elem = JSON.parse(elem);
-  const users = await User.find({}).or(elem);
-
-  resp.json(users);
-});
-usersRouter.get('/pruebaaaa2/:elem', async (req, resp) => {
-  let { elem } = req.params;
-  elem = JSON.parse(elem);
-  const reg = RegExp('^' + elem.toUpperCase());
-  const users = await User.find({ canonicalName: reg });
-  const club = await Club.find({ canonicalName: reg });
-
-  const aux = [];
-  users.forEach((ele) => {
-    aux.push(ele);
-  });
-
-  club.forEach((ele) => {
-    aux.push(ele);
-  });
-
-  resp.json(aux);
-});
 usersRouter.post('/', async (req, resp, next) => {
   const { email, name, surname, nickName, password, image, contactEmail, natalCountry, residentCountry, linkTwitch, linkTwitter, linkVlr, list_roles, list_langues, list_clubs } = req.body;
   let roles_id = [];
